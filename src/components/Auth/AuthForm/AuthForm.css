@@ -1,0 +1,10 @@
+.auth-form {
+	display: flex;
+	flex-direction: column;
+}
+
+input {
+	margin: 5px;
+	height: 25px;
+	outline: auto;
+}

@@ -1,0 +1,17 @@
+.main {
+	display: flex;
+}
+
+.column {
+	margin: auto;
+	margin-top: 10%;
+	max-width: 25%;
+	flex: 50%;
+	padding: 10px;
+}
+
+p {
+	font-size:large;
+	font-weight: bold;
+	text-align: inherit;
+}

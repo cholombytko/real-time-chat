@@ -1,0 +1,31 @@
+/* Chat.css */
+.Chat {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.Chat input, .Chat button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.Chat form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.Chat ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.Chat li {
+	text-align: left;
+  color: white;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+}
