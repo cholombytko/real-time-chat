@@ -31,12 +31,8 @@ const onlineUsers = new Set();
 io.on("connection", (socket) => {
   console.log('New client connected:', socket.id);
 
-  socket.on('sendMessage', async ({ senderId, receiverId, message }) => {
-    await pool.query(
-      'INSERT INTO messages (sender_id, receiver_id, message) VALUES ($1, $2, $3)',
-      [senderId, receiverId, message]
-    );
-    socket.broadcast.emit('receiveMessage', { senderId, receiverId, message });
+  socket.on('sendMessage', (message) => {
+    io.emit('receiveMessage', message);
   });
 
   socket.on('online', (username) => {
@@ -46,22 +42,10 @@ io.on("connection", (socket) => {
     io.emit('user_online', [...onlineUsers]);
   });
 
-  socket.on('offline', (username) => {
-       // Broadcast this user's offline status
-       onlineUsers.delete(username);
-       console.log('off' + onlineUsers)
-       io.emit('user_offline', [...onlineUsers]);
-  });
-
-  socket.on("request_disconnect", (username, callback) => {
-    console.log(`${username} requested disconnection.`);
-    callback();
-});
-
-  socket.on('disconnect', (username) => {
-      onlineUsers.delete(username)
+  socket.on('disconnect', () => {
+      onlineUsers.delete(socket.handshake.query.username)
       console.log('dis' + onlineUsers);
-      console.log(socket.username);
+      console.log(socket.handshake.query.username)
       io.emit('user_offline', [...onlineUsers]);  // Ensure 'socket.username' is set when they connect
   });
 });

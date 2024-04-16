@@ -3,6 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import Logout from '../Auth/Logout/Logout';
+import RedirectButton from '../ui/Button/RedirectButton/RedirectButton';
 
 const ContactsList = () => {
 	const [contacts, setContacts] = useState([]);
@@ -29,11 +30,6 @@ const ContactsList = () => {
 		})
 
 		return () => {
-			socket.emit("offline", localStorage.getItem("username"));
-      //socket.emit("request_disconnect", localStorage.getItem("username"), () => {
-        // Callback function executed after the server acknowledges
-        //socket.disconnect();
-   // });
 			socket.disconnect();	
 		};
 	}, []);
@@ -43,12 +39,30 @@ const ContactsList = () => {
 			const response = await axios.get('http://localhost:4000/api/contacts', {
 				headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
 			});
-			setContacts(response.data);  // Confirm that response.data is an array of contacts
+			for(const contact of response.data) {
+				contact.chatId = await createChat(contact.id);
+			}
+			setContacts(response.data); 
+			console.log(response.data) // Confirm that response.data is an array of contacts
 		} catch (error) {
 			console.error('Failed to fetch contacts:', error);
 			navigate('/');
 		}
 	};
+
+	const createChat = async (contactId) => {
+		try {
+			const response = await axios.post('http://localhost:4000/api/create-chat',
+				{ contactId },
+				{ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }},
+			)	
+			console.log(response)
+			const chatId = response.data.chatId;
+			return chatId;
+		} catch (e) {
+			console.error(e);
+		}
+	}
 
 	const handleAddContact = async (event) => {
 		event.preventDefault();
@@ -85,7 +99,7 @@ const ContactsList = () => {
 			<ul>
 				{contacts.map((contact, index) => (
 					<li key={index} style={{ color: onlineUsers.includes(contact.username) ? 'green' : 'white' }}>
-							{contact.username}
+							{contact.username} <RedirectButton link={`/chat/${contact.chatId}`}>Send message</RedirectButton>
 					</li>
 				))}
 			</ul>

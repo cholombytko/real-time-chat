@@ -17,9 +17,9 @@ function App() {
       <div>
         <Routes>
           <Route path="/" element={<Main/>} />
-          <Route path="/register" element={<Register socket={socket}/>} />
-          <Route path="/contacts" element={<ContactsList socket={socket}/>} />
-          <Route path="/chat" element={<Chat socket={socket} />} />
+          <Route path="/register" element={<Register/>} />
+          <Route path="/contacts" element={<ContactsList/>} />
+          <Route path="/chat/:chatId" element={<Chat/>} />
         </Routes>
       </div>
     </Router>
